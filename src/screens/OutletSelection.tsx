@@ -81,9 +81,9 @@ export function OutletSelection({ onSelect }: OutletSelectionProps) {
       let docId = 'offline_' + Date.now();
 
       try {
-        // Create a timeout promise - increased to 15 seconds for slow networks
+        // Create a timeout promise - increased to 30 seconds
         const timeoutPromise = new Promise((_, reject) => {
-          setTimeout(() => reject(new Error("Firestore write timed out. Check your internet connection.")), 15000);
+          setTimeout(() => reject(new Error("Firestore write timed out. Check your internet connection.")), 30000);
         });
 
         // Race the addDoc against the timeout

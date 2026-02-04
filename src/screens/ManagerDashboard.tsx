@@ -1,8 +1,9 @@
 import { useState } from 'react';
+import { useAuth } from '../contexts/AuthContext';
 import { KPICard } from '../components/KPICard';
 import { Card } from '../components/Card';
 import { Button } from '../components/Button';
-import { DollarSign, TrendingUp, TrendingDown, AlertCircle, Calendar, Plus } from 'lucide-react';
+import { DollarSign, TrendingUp, TrendingDown, AlertCircle, Calendar, Plus, LogOut } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 
 interface ManagerDashboardProps {
@@ -11,10 +12,21 @@ interface ManagerDashboardProps {
 
 export function ManagerDashboard({ onNavigate }: ManagerDashboardProps) {
   const [period, setPeriod] = useState<'daily' | 'weekly'>('daily');
+  const { currentUser, logout } = useAuth();
 
   const chartData: any[] = [];
 
   const alerts: any[] = [];
+
+  const handleLogout = async () => {
+    if (window.confirm('Are you sure you want to logout?')) {
+      try {
+        await logout();
+      } catch (error) {
+        console.error('Logout error:', error);
+      }
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -24,6 +36,9 @@ export function ManagerDashboard({ onNavigate }: ManagerDashboardProps) {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-2xl font-semibold text-gray-900">Dashboard</h1>
+              {currentUser && (
+                <p className="text-sm text-gray-600 mt-1">{currentUser.email}</p>
+              )}
             </div>
             <div className="flex gap-2">
               <Button variant="secondary" onClick={() => onNavigate('outletSelection')} size="md">
@@ -32,6 +47,10 @@ export function ManagerDashboard({ onNavigate }: ManagerDashboardProps) {
               <Button onClick={() => onNavigate('salesEntry')} size="md">
                 <Plus className="w-5 h-5" />
                 Add Sales
+              </Button>
+              <Button variant="secondary" onClick={handleLogout} size="md">
+                <LogOut className="w-5 h-5" />
+                Logout
               </Button>
             </div>
           </div>
